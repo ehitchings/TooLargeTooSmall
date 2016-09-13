@@ -22,11 +22,19 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
+<<<<<<< HEAD
         <module name="Calculator" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="Calculator" target="1.7" />
+=======
+        <module name="TooLargeTooSmall" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="TooLargeTooSmall" target="1.5" />
+>>>>>>> 58597d367c24f86c69c1f5114846fabcebc55ef9
     </bytecodeTargetLevel>
   </component>
 </project>

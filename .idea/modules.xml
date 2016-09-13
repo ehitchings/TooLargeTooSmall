@@ -2,7 +2,11 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+<<<<<<< HEAD
       <module fileurl="file://$PROJECT_DIR$/Calculator.iml" filepath="$PROJECT_DIR$/Calculator.iml" />
+=======
+      <module fileurl="file://$PROJECT_DIR$/TooLargeTooSmall.iml" filepath="$PROJECT_DIR$/TooLargeTooSmall.iml" />
+>>>>>>> 58597d367c24f86c69c1f5114846fabcebc55ef9
     </modules>
   </component>
 </project>
