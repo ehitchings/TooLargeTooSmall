@@ -5,10 +5,5 @@ import static org.junit.Assert.*;
  */
 public class DisplayTest {
 
-    public void displayInterfaceTest(){
-        Display dis = new Display();
-        dis.displayInterface();
-        assertSame("Failed to store first value", 100, dis.getFirstValue());
 
-    }
 }

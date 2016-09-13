@@ -8,7 +8,7 @@ public class Calculator {
 
     public static void main(String[] args) {
         Display dis = new Display();
-        dis.displayInterface();
+        dis.homeScreen();
 
     }
 }

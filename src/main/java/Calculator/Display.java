@@ -1,224 +1,345 @@
 package Calculator;
 import java.util.Scanner;
-import java.util.ArrayList;
+
 /**
  * Created by evanhitchings on 9/10/16.
  */
 public class Display {
 
-    private String currentDisplayValue;
-    private double firstValue;
+
+    private String currentDisplayString;
+    private double currentDisplayDouble;
     private double secondValue;
     private String operation;
     private BasicMath basicMath;
+    private ScientificMath scientificMath;
     private Scanner reader = new Scanner(System.in);
-    private ArrayList<String> operators;
+    private String displayMode;
+
 
 
 
     public Display(){
-        this.currentDisplayValue = "0";
-        this.firstValue = 0;
+        this.currentDisplayString = "0";
+        this.currentDisplayDouble = 0;
         this.secondValue = 0;
         this.operation = "";
         this.basicMath = new BasicMath();
-        this.operators = new ArrayList<String>();
-        //I feel dirty for doing this...
-        operators.add("+");
-        operators.add("-");
-        operators.add("*");
-        operators.add("/");
+        this.scientificMath = new ScientificMath();
+        this.displayMode = "DECIMAL";
 
     }
 
-    public void setCurrentDisplayValue(String updatedCurrentDisplay) {
-        this.currentDisplayValue = updatedCurrentDisplay;
-        this.currentDisplayValue = currentDisplayValue.substring(0, 9);
+    public void setCurrentDisplayString(Double currentValue) {
+        this.currentDisplayString = "" + currentValue;
+        //this.currentDisplayString = currentDisplayString.substring(0, 9);
+        System.out.println(this);
     }
 
-    public String getCurrentDisplayValue() {
-        return currentDisplayValue;
+    public String getCurrentDisplayString() {
+        return currentDisplayString;
     }
 
-    public double getFirstValue() {
-        return firstValue;
+    public double getCurrentDisplayDouble() {
+        return currentDisplayDouble;
+    }
+
+    @Override
+    public String toString(){
+      if(this.currentDisplayString.equalsIgnoreCase("err")){
+          System.out.println(this.currentDisplayString);
+      }
+     return displayModeConverter();
+
+
+    }
+
+    public String displayModeConverter(){
+        double dubs = Double.valueOf(currentDisplayDouble);
+        Integer toConvert = (int)dubs;
+        switch (displayMode){
+            case "OCTAL":
+                this.currentDisplayString = "" + Integer.toOctalString(toConvert);
+                break;
+            case "HEX":
+                this.currentDisplayString = "" + Integer.toHexString(toConvert);
+                break;
+            case "BINARY":
+                this.currentDisplayString = "" + Integer.toBinaryString(toConvert);
+                break;
+            default:
+                break;
+        }
+        return this.currentDisplayString;
     }
 
     public void clearDisplay(){
         for (int i = 0; i < 20; i++){
             System.out.println();
         }
-
-
-    }
-
-    public double getSecondValue() {
-        return secondValue;
-    }
-
-    public String getOperation() {
-        return operation;
+        this.setCurrentDisplayString(0.0);
+        this.currentDisplayDouble = 0;
+        this.secondValue = 0;
     }
 
 
 
-    public void setFirstValue(double firstValue) {
-        this.firstValue = firstValue;
-        setCurrentDisplayValue("" + firstValue);
-        System.out.println(this);
+
+    public void setCurrentDisplayDouble(double currentDisplayDouble) {
+        this.currentDisplayDouble = currentDisplayDouble;
+        setCurrentDisplayString(currentDisplayDouble);
+        System.out.println(currentDisplayString);
 
     }
 
-    public void setOperation(String operation) {
-        this.operation = operation;
-        System.out.println(this);
-    }
 
-    public void setSecondValue(double secondValue) {
-        this.secondValue = secondValue;
-        setCurrentDisplayValue("" + secondValue);
-        System.out.println(this);
-    }
 
-    public double numberInput(){
-        Double numInput = null;
+
+
+    public void homeScreen(){
+        String command;
         do {
-            try {
-                numInput = Double.parseDouble(reader.nextLine());
-            } catch (NumberFormatException e) {
-                continue;
-            }
-        } while (numInput != null);
-        setSecondValue(numInput);
-        setCurrentDisplayValue("" + numInput);
+            System.out.println(currentDisplayString);
+            System.out.println("Choose an option: \n 1: Basic Math \n 2: Scientific Math \n 3: Change Display Mode \n C: Clear Screen \n Q: Quit");
+            command = reader.nextLine();
 
-        Double input = reader.nextDouble();
+            switch (command){
+                case "1":
+                    basicMathMenu();
+                    break;
+                case "2":
+                    scientificMathMenu();
+                    break;
+                case "3":
+                    //changeDisplayMenu();
+                    break;
+                case "C":
+                    clearDisplay();
+                    break;
+                case "Q":
+                    return;
+                default:
+                    continue;
+            }
+
+
+        } while (!(command.equalsIgnoreCase("Q")));
+
+
+
+
     }
 
-    //THIS IS HOT GARBAGE!!1! REFACTOR TO 3 METHODS, ONE FOR EACH INPUT NEEDED?
-    //UPDATE: STILL TERRIBLE!
-    public void displayInterface() {
+    public void basicMathMenu(){
 
-        while(true){
-            System.out.println(this);
-            String userInput = reader.nextLine();
-            if (operators.contains(userInput)){
-                setOperation(userInput);
-                setFirstValue(Double.parseDouble(currentDisplayValue));
-                setSecondValue(numberInput());
+        String command;
+       do {
+           if (currentDisplayDouble == 0){
+               setCurrentDisplayDouble(numberInput());
+               setCurrentDisplayString(currentDisplayDouble);
+           }
+           System.out.println(currentDisplayString);
+           System.out.println("Choose an option: \n 1: Add \n 2: Subtract \n 3: Multiply \n 4: Divide \n 5: Square \n 6: SquareRoot \n 7: Exponent \n " +
+                   "8: Inverse \n S: Switch Display Mode \n C: Clear \n Q: Previous");
+           command = reader.nextLine();
+           switch (command){
+               case "1":
+                   currentDisplayDouble = basicMath.add(numberInput(), currentDisplayDouble);
+                   break;
+               case "2":
+                   currentDisplayDouble = basicMath.subtract(numberInput(), currentDisplayDouble);
+                   break;
+               case "3":
+                   currentDisplayDouble = basicMath.multiply(numberInput(), currentDisplayDouble);
+                   break;
+               case "4":
+                   try{
+                       currentDisplayDouble = basicMath.divide(numberInput(), currentDisplayDouble);
+                   } catch (ArithmeticException e){
+                       currentDisplayString = "err";
+                       break;
+                   }
+                   break;
+               case "5":
+                   currentDisplayDouble = basicMath.square(currentDisplayDouble);
+                   break;
+               case "6":
+                   currentDisplayDouble = basicMath.squareRoot(currentDisplayDouble);
+                   break;
+               case "7":
+                   currentDisplayDouble = basicMath.exponation(currentDisplayDouble, numberInput());
+                   break;
+               case "8":
+                   currentDisplayDouble = basicMath.inverse(currentDisplayDouble);
+                   break;
+               case "S":
+                   //switchDisplayLogic();
+                   break;
+               case "C":
+                   clearDisplay();
+                   break;
+               case "Q":
+                   return;
+               default:
+                   break;
+           }
+           if(!(currentDisplayString.equalsIgnoreCase("err"))){
+               //setCurrentDisplayString(currentDisplayDouble);
+               continue;
+           }
 
-            } else try {
-                setFirstValue(Double.parseDouble(userInput));
 
-            } catch (NumberFormatException e) {
-                System.out.println("You must type a number!");
-                clearDisplay();
-                //System.out.println(this);
-                continue;
-            }
+       } while (!(command.equalsIgnoreCase("Q")));
 
+    }
 
-        }
-
-
-        //System.out.println("Input your first number:");
-
-        Double firstValueInput = null;
+    public void scientificMathMenu(){
+        String command;
         label1:
         do {
-            System.out.println(this);
-
+            if (currentDisplayDouble == 0) {
+                setCurrentDisplayDouble(numberInput());
+                setCurrentDisplayString(currentDisplayDouble);
+            }
+            System.out.println(currentDisplayString);
+            System.out.println("Choose an option: \n 1: Sin \n 2: Cos \n 3: Tan \n 4: Inverse Sin \n 5: Inverse Cos \n 6: Inverse Tan \n T: Change Trig Mode \n " +
+                    "8: Log \n 9: Natural Log \n 10: Inverse Log \n 11: Inverse Natural Log \n 12: Facotiral \n S: Switch Display Mode \n M: Manual Switch Display Mode\n C: Clear \n Q: Previous");
+            command = reader.nextLine();
             try {
-                firstValueInput = Double.parseDouble(reader.nextLine());
-            } catch (NumberFormatException e) {
-                System.out.println("You must type a number!");
-                continue;
+
+                switch (command) {
+                    case "1":
+                        currentDisplayDouble = scientificMath.sin(currentDisplayDouble);
+                        break;
+                    case "2":
+                        currentDisplayDouble = scientificMath.cos(currentDisplayDouble);
+                        break;
+                    case "3":
+                        currentDisplayDouble = scientificMath.tan(currentDisplayDouble);
+                        break;
+                    case "4":
+                        currentDisplayDouble = scientificMath.asin(currentDisplayDouble);
+                        break;
+                    case "5":
+                        currentDisplayDouble = scientificMath.acos(currentDisplayDouble);
+                        break;
+                    case "6":
+                        currentDisplayDouble = scientificMath.atan(currentDisplayDouble);
+                        break;
+                    case "7":
+                        clearDisplay();
+                        System.out.println(this.currentDisplayString);
+                        System.out.println("1: RADIANS \n 2: DEGREES");
+                        String modeSwitchCommand = "";
+                        while(!(modeSwitchCommand.equalsIgnoreCase("1")) || !(modeSwitchCommand.equalsIgnoreCase("2")));
+                        modeSwitchCommand = reader.nextLine();
+
+                        scientificMath.switchUnitsMode(modeSwitchCommand);
+                        break;
+                    case "8":
+                        currentDisplayDouble = scientificMath.log(currentDisplayDouble);
+                        break;
+                    case "9":
+                        currentDisplayDouble = scientificMath.ln(currentDisplayDouble);
+                        break;
+                    case "10":
+                        currentDisplayDouble = scientificMath.inverseLog(currentDisplayDouble);
+                        break;
+                    case "11":
+                        currentDisplayDouble = scientificMath.inverseLn(currentDisplayDouble);
+                        break;
+                    case "12":
+                        currentDisplayDouble = scientificMath.factorial(currentDisplayDouble);
+                        break;
+                    case "S":
+                        switchDisplayMode();
+                        break;
+                    case "M":
+                        String displayCommand = reader.nextLine();
+                        switchDisplayMode(displayCommand);
+
+                    case "C":
+                        clearDisplay();
+                        break;
+                    case "Q":
+                        return;
+                    default:
+                        break;
+
+                }
+            } catch (ArithmeticException e) {
+                currentDisplayString = "err";
+                break label1;
 
             }
-        } while (firstValueInput != null);
-        setFirstValue(firstValueInput);
 
-        String operation = null;
-        //System.out.println("What would you like to do?");
-        //System.out.println(basicMath.);
-        label2:
-        while (!(this.operators.contains(operation))) {
-            operation = reader.nextLine();
+
+        } while(!(command.equalsIgnoreCase("Q")));
+
+
+    }
+
+    public void switchDisplayMode(){
+        if(this.displayMode.equalsIgnoreCase("DECIMAL")){
+            this.displayMode = "HEX";
+            return;
+        } else if (this.displayMode.equalsIgnoreCase("HEX")){
+            this.displayMode = "BINARY";
+            return;
+        } else if (this.displayMode.equalsIgnoreCase("BINARY")){
+            this.displayMode = "OCTAL";
+        } else {
+            this.displayMode = "DECIMAL";
         }
-        setOperation(operation);
+    }
 
-        Double secondValueInput = null;
-        /*label3:
+    public void switchDisplayMode(String displayMode){
+        System.out.println("DECIMAL \n HEX \n BINARY \n OCTAL");
+        switch(displayMode){
+            case "DECIMAL":
+                this.displayMode = "DECIMAL";
+                break;
+            case "HEX":
+                this.displayMode = "HEX";
+                break;
+            case "OCTAL":
+                this.displayMode = "OCTAL";
+                break;
+            case "BINARY":
+                this.displayMode = "BINARY";
+                break;
+            default:
+                return;
+
+        }
+
+    }
+
+
+
+    public double numberInput(){
+        System.out.println("Input a number:");
+        double numInput = 0.00;
         do {
             try {
-                secondValueInput = Double.parseDouble(reader.nextLine());
+                numInput = reader.nextDouble();
             } catch (NumberFormatException e) {
                 continue;
             }
-        } while (secondValueInput != null);
-        setSecondValue(secondValueInput);
-        */
-        doMath();
-
-
+        } while (numInput == 0.00);
+        return numInput;
 
     }
 
 
-    //THIS DOES WAY MORE THAN A SINGLE THING! I AM A BAD PERSON!
-    public double doMath(){
-
-        switch (operation) {
-            case "+":
-                try {
-                    return basicMath.add(firstValue, secondValue);
-                } catch (ArithmeticException e){
-                    setCurrentDisplayValue("err");
-                    return 0.00;
-                }
-                //Why is these breaks unreachable? is it because addition can never have an arithmeticexception?
-                //break;
-            case "-":
-
-                try {
-                    return basicMath.subtract(firstValue, secondValue);
-                } catch (ArithmeticException e){
-                    setCurrentDisplayValue("err");
-                    return 0.00;
-                }
-                //break;
-            case "*":
-                try {
-                    return basicMath.multiply(firstValue, secondValue);
-                } catch (ArithmeticException e) {
-                    setCurrentDisplayValue("err");
-                    return 0.00;
-                }
-                //break;
-            case "/":
-                try{
-                    return basicMath.divide(firstValue, secondValue);
-                } catch (ArithmeticException e) {
-                    setCurrentDisplayValue("err");
-                    return 0.00;
-                }
-                //break;
-            default:
-                return 0.00;
 
 
-        }
-    }
-    /*public void updateDisplay(String string){
 
-        this.currentDisplayValue += string;
-    }*/
 
-    public String toString(){
-        //clearDisplay();
-        return this.currentDisplayValue;
-    }
+
+
+
+
+
 
 }
-
-
